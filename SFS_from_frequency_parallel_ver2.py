@@ -14,8 +14,8 @@ s = float(sys.argv[3])
 m = float(sys.argv[4])
 tfinal = int(sys.argv[5])
 nbase = int(sys.argv[6])
+N_SFS = int(sys.argv[7]) # number of coalescent simulation we run.
 
-N_SFS = 1000 # number of coalescent simulation we run.
 freq_file = open('L={}_N={}_s={:.6f}_m={:.6f}_tfinal={}.txt'.format(L, N, s, m, tfinal))
 lines = freq_file.readlines()
 
@@ -81,7 +81,8 @@ def runner(idx):
     #    print(individuals)
         Ne = Ne_parent
         Ne_cumsum = np.cumsum(Ne_parent)
-    np.savetxt('SFS_L={}_N={}_s={:.6f}_m={:.6f}_tfinal={}_nsample={}_{}.txt'.format(L,
+    if np.mod(idx, 100) == 0:
+        np.savetxt('SFS_L={}_N={}_s={:.6f}_m={:.6f}_tfinal={}_nsample={}_{}.txt'.format(L,
            N, s, m, tfinal, n, idx), SFS)
     return SFS
 
@@ -94,7 +95,6 @@ if __name__ == '__main__':
     SFS = np.sum(SFS_items, axis=0)
 
     SFS /= N_SFS
-    np.savetxt('SFS_L={}_N={}_s={:.6f}_m={:.6f}_tfinal={}_nsample={}_avg.txt'.format(L,
-               N, s, m, tfinal, nbase), SFS)
-    #plt.figure()
-    #plt.loglog(bin_edges[:-1] / nbase, SFS / sum(SFS))
+    np.savetxt('SFS_L={}_N={}_s={:.6f}_m={:.6f}_tfinal={}_nsample={}_navg={}.txt'.format(L,
+               N, s, m, tfinal, nbase, N_SFS), SFS)
+
